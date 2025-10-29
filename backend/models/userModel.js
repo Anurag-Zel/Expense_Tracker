@@ -32,6 +32,15 @@ const userSchema = new mongoose.Schema({
             message : (props) => `${props.value} is not a proper email address`
         }
     },
+    phone : {
+        type : String,
+        required : false,
+        unique : true,
+        validate : {
+            validator : (val) => /^[1-9][0-9]{9}$/.test(val),
+            message : (props) => `${props.value} not a valid Phone Number`
+        }
+    },
     profilePic : {
         type : String,
         required : false,
