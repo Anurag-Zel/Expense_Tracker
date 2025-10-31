@@ -6,7 +6,7 @@ const groupSchema = new mongoose.Schema({
         required : [true, 'Title is required'],
         validate : {
             validator : (val) => val.length <= 20,
-            message : (props) => `Title must be 20 chracters, found ${props.value.length}`
+            message : (props) => `Title must be 20 characters, found ${props.value.length}`
         }
     },
     description : {
@@ -14,33 +14,31 @@ const groupSchema = new mongoose.Schema({
         required : false,
         validate : {
             validator : (val) => val.length <= 30,
-            message : (props) => `Description must be shorter, withing 30 characters`
+            message : (props) => `Description must be shorter, within 30 characters`
         }
     },
     createdBy : {
-        type : mongoose.Types.ObjectId,
+        type : String,
         ref : 'User',
-        require : [true, 'Creator Id required'],
-        validate : {
-            validator : (val) => mongoose.Types.ObjectId.isValid(val),
-        }
+        required : [true, 'Creator Id required'],
     },
-    memberIds : [{
-        type : mongoose.Types.ObjectId,
+    memberIds : {
+        type : [mongoose.Types.ObjectId],
         ref : 'User',
-        unique : true,
-        validate : {
+        default : [],
+        validate :{
             validator : (arr) => arr.every(id => mongoose.Types.ObjectId.isValid(id))
         }
-    }],
-    expenseIds : [{
-        type : mongoose.Types.ObjectId,
+    },
+    expenseIds : {
+        type : [mongoose.Types.ObjectId],
         ref : 'Expense',
-        unique : true,
+        default : [],
         validate : {
             validator : (arr) => arr.every(id => mongoose.Types.ObjectId.isValid(id)) 
         }
-    }]
+    }
 },{timestamps : true});
 
 const Group = mongoose.model('Group', groupSchema);
+export default Group;

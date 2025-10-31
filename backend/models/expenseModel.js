@@ -6,7 +6,7 @@ const expenseSchema = new mongoose.Schema({
         required : false,
         validate : {
             validator : (val) => val.length <= 20,
-            message : (props) => `Description must be shorter, withing 20 characters`
+            message : (props) => `Description must be shorter, within 20 characters`
         }
     },
     amount : {
@@ -19,22 +19,29 @@ const expenseSchema = new mongoose.Schema({
     },
     createdOn : {
         type : Date,
-        default : Date.now()
+        default : Date.now
     },
     owedTo : {
-        type : mongoose.Types.ObjectId,
+        type : String,
         ref : 'User',
         required : [true, 'Owed To required'],
-        validate : {
-            validator : (val) => mongoose.Types.ObjectId.isValid(val)
-        }
     },
-    owedBy : [{
-        type : mongoose.Types.ObjectId,
+    owedBy : {
+        type : [mongoose.Types.ObjectId],
         ref : 'User',
         required : [true, 'Owed By required'],
-        validate : {
-            validator : (val) => mongoose.Types.ObjectId.isValid(val)
+        validate :{
+                validator : (arr) => arr.every(id => mongoose.Types.ObjectId.isValid(id))
         }
-    }]
-})
+    },
+    settlement : {
+        type : Boolean,
+        default : false,
+        validate : {
+            validator : (val) => typeof val === 'boolean', 
+        }
+    }
+},{timestamps : true});
+
+const Expense = mongoose.model('Expense', expenseSchema);
+export default Expense;

@@ -1,6 +1,11 @@
 import mongoose from "mongoose";
 
 const userSchema = new mongoose.Schema({
+    auth0Id : {
+        type : String,
+        required : [true, 'Auth0 Id is required'],
+        unique : true,
+    },
     username : {
         type : String,
         required : [true, 'UserName is required'],
@@ -49,14 +54,14 @@ const userSchema = new mongoose.Schema({
             message : (props) =>  `${props.value} not a valid image format`
         }
     },
-    groupIds : [{
-        type : mongoose.Types.ObjectId,
-        required : false,
+    groupIds : {
+        type : [mongoose.Types.ObjectId],
         ref : 'Group',
-        validate : {
-            validator : (arr) => arr.every(id => mongoose.Types.ObjectId.isValid(val)),
-        }
-    }],
+        default : [],
+        validate :{
+            validator : (arr) => arr.every(id => mongoose.Types.ObjectId.isValid(id)),
+        }    
+    },
 },{timestamps : true});
 
 const User = mongoose.model('User',userSchema);
